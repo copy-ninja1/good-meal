@@ -16,15 +16,22 @@ export default function CartScreen() {
 
   if (cart.length === 0) {
     return (
-      <View className="flex-1 items-center justify-center px-4" style={{ paddingTop: insets.top }}>
-        <IconSymbol name="cart.fill" size={64} color="#ccc" />
-        <Text className="text-xl font-bold mt-4">Your cart is empty</Text>
-        <Text className="text-gray-500 text-center mt-2">
-          Add items from your favorite vendors to get started
-        </Text>
-        <Button onPress={() => router.push('/index')} className="mt-8">
-          Browse Vendors
-        </Button>
+      <View className="flex-1 bg-gray-50" style={{ paddingTop: insets.top }}>
+        <View className="px-4 py-3 bg-white border-b border-gray-200">
+          <Text className="text-xl font-bold">Cart</Text>
+        </View>
+        <View className="flex-1 items-center justify-center px-4">
+          <View className="bg-white rounded-xl p-8 items-center shadow-sm">
+            <IconSymbol name="cart.fill" size={64} color="#ccc" />
+            <Text className="text-xl font-bold mt-4">Your cart is empty</Text>
+            <Text className="text-gray-500 text-center mt-2 mb-6">
+              Add items from your favorite vendors to get started
+            </Text>
+            <Button onPress={() => router.push('/(tabs)')} className="w-full">
+              Browse Vendors
+            </Button>
+          </View>
+        </View>
       </View>
     );
   }
@@ -33,20 +40,24 @@ export default function CartScreen() {
   const hasMultipleVendors = vendors.length > 1;
 
   return (
-    <View className="flex-1" style={{ paddingTop: insets.top }}>
+    <View className="flex-1 bg-gray-50" style={{ paddingTop: insets.top }}>
       <View className="px-4 py-3 bg-white border-b border-gray-200 flex-row items-center justify-between">
         <Text className="text-xl font-bold">Cart</Text>
         {cart.length > 0 && (
           <Pressable onPress={clearCart}>
-            <Text className="text-red-600">Clear All</Text>
+            <Text className="text-red-600 font-medium">Clear All</Text>
           </Pressable>
         )}
       </View>
 
       <ScrollView className="flex-1">
         {hasMultipleVendors && (
-          <View className="px-4 py-2 bg-yellow-50 border-b border-yellow-200">
-            <Text className="text-sm text-yellow-800">
+          <View className="mx-4 mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-xl">
+            <View className="flex-row items-center">
+              <IconSymbol name="exclamationmark.triangle.fill" size={16} color="#d97706" />
+              <Text className="ml-2 text-sm text-yellow-800 font-medium">Multiple Vendors</Text>
+            </View>
+            <Text className="text-sm text-yellow-700 mt-1">
               You have items from multiple vendors. Please order from one vendor at a time.
             </Text>
           </View>
