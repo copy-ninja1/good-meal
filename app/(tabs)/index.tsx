@@ -1,98 +1,286 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { useRef } from "react";
+import {
+  View,
+  ScrollView,
+  RefreshControl,
+  Pressable,
+  Image,
+  Dimensions,
+} from "react-native";
+import { FlashList } from "@shopify/flash-list";
+import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { useVendors } from "@/lib/hooks/use-vendors";
+import { useCategories } from "@/lib/hooks/use-categories";
+import { CarouselComponent } from "@/components/ui/carousel";
+import { Text } from "@/components/ui/text";
+import { Skeleton } from "@/components/ui/skeleton";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Colors } from "@/constants/theme";
+import type { Vendor, Category } from "../../types";
+
+const { width: screenWidth } = Dimensions.get("window");
+
+const adBanners = [
+  {
+    id: "1",
+    image:
+      "https://images.unsplash.com/photo-1571091718767-18b5b1457add?q=80&w=2672&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    id: "2",
+    image:
+      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=2881&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    id: "3",
+    image:
+      "https://plus.unsplash.com/premium_photo-1664189213349-b02ba035e4e7?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+];
+
+const Header = () => (
+  <View className="px-4 py-4 bg-white flex-row items-center justify-between">
+    <View>
+      <Text className="text-2xl font-bold">Good evening!</Text>
+      <Text className="text-gray-600">What would you like to eat?</Text>
+    </View>
+    <Pressable
+      onPress={() => router.push("/profile")}
+      className="w-10 h-10 rounded-full bg-gray-200 items-center justify-center"
+    >
+      <IconSymbol name="person.fill" size={20} color={Colors.light.tint} />
+    </Pressable>
+  </View>
+);
+
+const AdBanner = () => (
+  <View className="pt-4 pb-2">
+    <CarouselComponent
+      data={adBanners}
+      renderItem={(item: { image: string }) => (
+        <Image
+          source={{ uri: item.image }}
+          className="w-full h-40 rounded-2xl"
+          resizeMode="cover"
+        />
+      )}
+      itemWidth={screenWidth - 32}
+      autoplay
+    />
+  </View>
+);
+
+const Section = ({
+  title,
+  onSeeAll,
+  children,
+}: {
+  title: string;
+  onSeeAll?: () => void;
+  children: React.ReactNode;
+}) => (
+  <View className="mb-8">
+    <View className="flex-row items-center justify-between px-4 mb-3">
+      <Text className="text-xl font-bold">{title}</Text>
+      {onSeeAll && (
+        <Pressable onPress={onSeeAll}>
+          <Text className="text-blue-600">See All</Text>
+        </Pressable>
+      )}
+    </View>
+    {children}
+  </View>
+);
+
+const VendorCard = ({ item }: { item: Vendor }) => (
+  <Pressable
+    onPress={() => router.push(`/vendor/${item.id}`)}
+    className="bg-white rounded-2xl overflow-hidden shadow-md w-72 mr-4"
+  >
+    <Image
+      source={{ uri: item.coverImage || item.logo }}
+      className="w-full h-32"
+      resizeMode="cover"
+    />
+    <View className="p-3">
+      <Text className="font-bold text-base mb-1">{item.name}</Text>
+      <View className="flex-row items-center mb-2">
+        <IconSymbol name="star.fill" size={14} color={Colors.light.tint} />
+        <Text className="text-sm ml-1">{item.rating}</Text>
+        <Text className="text-xs text-gray-500 ml-1">
+          ({item.reviewCount} reviews)
+        </Text>
+      </View>
+      <View className="flex-row items-center">
+        <IconSymbol name="clock.fill" size={14} color="#666" />
+        <Text className="text-xs text-gray-600 ml-1">
+          {item.deliveryTime} min
+        </Text>
+        <Text className="text-xs text-gray-600 mx-2">•</Text>
+        <Text className="text-xs text-gray-600">
+          ${item.deliveryFee.toFixed(2)} delivery
+        </Text>
+      </View>
+    </View>
+  </Pressable>
+);
+
+const CategoryCard = ({ item }: { item: Category }) => (
+  <Pressable
+    onPress={() => router.push(`/explore?category=${item.id}`)}
+    className="items-center justify-center bg-white rounded-xl p-3 shadow-sm w-24 h-24 mr-3"
+  >
+    {item.icon ? (
+      <Text className="text-3xl mb-1">{item.icon}</Text>
+    ) : (
+      <IconSymbol name="square.grid.2x2" size={32} color={Colors.light.tint} />
+    )}
+    <Text className="font-medium text-xs text-center" numberOfLines={2}>
+      {item.name}
+    </Text>
+  </Pressable>
+);
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const insets = useSafeAreaInsets();
+  const {
+    data: featuredVendors,
+    isLoading: loadingFeatured,
+    refetch: refetchVendors,
+  } = useVendors({ featured: true, limit: 5 });
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  const { data: nearbyVendors, isLoading: loadingNearby } = useVendors({
+    limit: 5,
+  });
+  const { data: topRatedVendors, isLoading: loadingTopRated } = useVendors({
+    sort: "rating",
+    limit: 5,
+  });
+
+  const { data: categories, isLoading: loadingCategories } = useCategories();
+
+  const onRefresh = () => {
+    refetchVendors();
+  };
+
+  const renderVendorItem = ({ item }: { item: Vendor }) => (
+    <VendorCard item={item} />
+  );
+
+  const renderCategoryItem = ({ item }: { item: Category }) => (
+    <CategoryCard item={item} />
+  );
+
+  const isLoading =
+    loadingFeatured || loadingNearby || loadingTopRated || loadingCategories;
+
+  return (
+    <ScrollView
+      className="flex-1 bg-gray-50"
+      style={{ paddingTop: insets.top }}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+      }
+    >
+      <Header />
+      <View className="px-4">
+        <AdBanner />
+      </View>
+
+      <Section title="Categories">
+        {loadingCategories ? (
+          <View className="flex-row px-4">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="w-24 h-24 rounded-xl mr-3" />
+            ))}
+          </View>
+        ) : (
+          <FlashList
+            data={categories}
+            renderItem={renderCategoryItem}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              gap: 12,
+              paddingBottom: 12,
+            }}
+          />
+        )}
+      </Section>
+
+      <Section
+        title="Featured Vendors"
+        onSeeAll={() => router.push("/explore?featured=true")}
+      >
+        {loadingFeatured ? (
+          <View className="px-4">
+            <Skeleton className="w-72 h-48 rounded-2xl" />
+          </View>
+        ) : (
+          <FlashList
+            data={featuredVendors}
+            renderItem={renderVendorItem}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              gap: 16,
+              paddingBottom: 12,
+            }}
+          />
+        )}
+      </Section>
+
+      <Section title="Nearby You" onSeeAll={() => router.push("/explore")}>
+        {loadingNearby ? (
+          <View className="px-4">
+            <Skeleton className="w-72 h-48 rounded-2xl" />
+          </View>
+        ) : (
+          <FlashList
+            data={nearbyVendors}
+            renderItem={renderVendorItem}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              gap: 16,
+              paddingBottom: 12,
+            }}
+          />
+        )}
+      </Section>
+
+      <Section
+        title="Top Rated"
+        onSeeAll={() => router.push("/explore?sort=rating")}
+      >
+        {loadingTopRated ? (
+          <View className="px-4">
+            <Skeleton className="w-72 h-48 rounded-2xl" />
+          </View>
+        ) : (
+          <FlashList
+            data={topRatedVendors}
+            renderItem={renderVendorItem}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              gap: 16,
+              paddingBottom: 12,
+            }}
+          />
+        )}
+      </Section>
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});

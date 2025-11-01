@@ -1,15 +1,20 @@
 {
   "expo": {
-    "name": "meal-app",
-    "slug": "meal-app",
+    "name": "Good Food",
+    "slug": "good-food",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "mealapp",
+    "scheme": "goodfood",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We need your location to show nearby vendors and delivery options.",
+        "NSFaceIDUsageDescription": "Allow Face ID to quickly and securely log into your account."
+      },
+      "bundleIdentifier": "com.goodfood.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +24,15 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.POST_NOTIFICATIONS"
+      ],
+      "package": "com.goodfood.app"
     },
     "web": {
       "output": "static",
@@ -38,11 +51,34 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Good Food to use your location for nearby vendors and delivery."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#0a7ea4",
+          "sounds": ["./assets/notification.wav"]
+        }
+      ],
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsDownloadToken": "YOUR_MAPBOX_TOKEN_HERE"
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "stripePublishableKey": "pk_test_YOUR_STRIPE_KEY"
     }
   }
 }
