@@ -122,6 +122,13 @@ export type Cart = {
   total: number
 }
 
+export type CartTotals = {
+  subtotal: number;
+  deliveryFee: number;
+  tax: number;
+  total: number;
+};
+
 export type OrderStatus =
   | 'pending'
   | 'confirmed'
@@ -185,6 +192,12 @@ export type Filter = {
 }
 
 export type SortOption = 'relevance' | 'distance' | 'rating' | 'deliveryTime' | 'priceLow' | 'priceHigh'
+
+export type VendorParams = Filter & {
+  featured?: boolean;
+  limit?: number;
+  sort?: SortOption;
+};
 
 export type Notification = {
   id: string

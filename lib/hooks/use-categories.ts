@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { api } from '../api/mockClient'
-import type { Category } from '../../../types'
+import { api } from "../api/mockClient";
 
 export function useCategories() {
   return useQuery({

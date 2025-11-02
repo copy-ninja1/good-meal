@@ -1,24 +1,23 @@
-import { useRef } from "react";
-import {
-  View,
-  ScrollView,
-  RefreshControl,
-  Pressable,
-  Image,
-  Dimensions,
-} from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useVendors } from "@/lib/hooks/use-vendors";
-import { useCategories } from "@/lib/hooks/use-categories";
 import { CarouselComponent } from "@/components/ui/carousel";
-import { Text } from "@/components/ui/text";
-import { Skeleton } from "@/components/ui/skeleton";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Text } from "@/components/ui/text";
 import { Colors } from "@/constants/theme";
-import type { Vendor, Category } from "../../types";
+import { useCategories } from "@/lib/hooks/use-categories";
+import { useVendors } from "@/lib/hooks/use-vendors";
+import type { Category, Vendor } from "../../types";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -113,6 +112,7 @@ const VendorCard = ({ item }: { item: Vendor }) => (
           ({item.reviewCount} reviews)
         </Text>
       </View>
+
       <View className="flex-row items-center">
         <IconSymbol name="clock.fill" size={14} color="#666" />
         <Text className="text-xs text-gray-600 ml-1">
@@ -129,7 +129,7 @@ const VendorCard = ({ item }: { item: Vendor }) => (
 
 const CategoryCard = ({ item }: { item: Category }) => (
   <Pressable
-    onPress={() => router.push(`/explore?category=${item.id}`)}
+    onPress={() => router.push(`/category/${item.id}`)}
     className="items-center justify-center bg-white rounded-xl p-3 shadow-sm w-24 h-24 mr-3"
   >
     {item.icon ? (

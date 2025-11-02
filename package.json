@@ -8,6 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "clean": "npx expo start --clear",
     "lint": "expo lint"
   },
   "dependencies": {
@@ -71,6 +72,7 @@
     "expo-web-browser": "~15.0.8",
     "iconsax-react-nativejs": "^0.0.8",
     "jotai": "^2.10.2",
+    "lorem-ipsum": "^2.0.8",
     "lucide-react-native": "^0.468.0",
     "nativewind": "5.0.0-preview.2",
     "react": "19.1.0",
@@ -92,6 +94,7 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "twrnc": "^4.10.1",
+    "use-debounce": "^10.0.6",
     "zod": "^3.23.8"
   },
   "devDependencies": {

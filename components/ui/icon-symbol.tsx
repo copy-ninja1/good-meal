@@ -1,11 +1,11 @@
 // Fallback for using MaterialIcons on Android and web.
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
-import { ComponentProps } from 'react';
-import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
+import { SymbolWeight } from "expo-symbols";
+import { ComponentProps } from "react";
+import { OpaqueColorValue, type StyleProp, type TextStyle } from "react-native";
 
-type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
+type IconMapping = Record<string, ComponentProps<typeof MaterialIcons>["name"]>;
 type IconSymbolName = keyof typeof MAPPING;
 
 /**
@@ -13,31 +13,35 @@ type IconSymbolName = keyof typeof MAPPING;
  * - see Material Icons in the [Icons Directory](https://icons.expo.fyi).
  * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
  */
-const MAPPING = {
-  'house.fill': 'home',
-  'paperplane.fill': 'send',
-  'chevron.left.forwardslash.chevron.right': 'code',
-  'chevron.right': 'chevron-right',
-  'magnifyingglass': 'search',
-  'cart.fill': 'shopping-cart',
-  'person.fill': 'person',
-  'heart.fill': 'favorite',
-  'star.fill': 'star',
-  'location.fill': 'location-on',
-  'bell.fill': 'notifications',
-  'creditcard.fill': 'credit-card',
-  'gear.fill': 'settings',
-  'arrow.back': 'arrow-back',
-  'arrow.forward': 'arrow-forward',
-  'checkmark': 'check',
-  'plus': 'add',
-  'minus': 'remove',
-  'trash.fill': 'delete',
-  'map.fill': 'map',
-  'calendar': 'calendar-today',
-  'clock.fill': 'access-time',
-  'tag.fill': 'local-offer',
-} as IconMapping;
+const MAPPING: IconMapping = {
+  "house.fill": "home",
+  "paperplane.fill": "send",
+  "chevron.left.forwardslash.chevron.right": "code",
+  "chevron.left": "chevron-left",
+  "chevron.right": "chevron-right",
+  magnifyingglass: "search",
+  "cart.fill": "shopping-cart",
+  cart: "shopping-cart",
+  "bag.fill": "shopping-bag",
+  "person.fill": "person",
+  "heart.fill": "favorite",
+  "star.fill": "star",
+  "location.fill": "location-on",
+  "bell.fill": "notifications",
+  "creditcard.fill": "credit-card",
+  "gear.fill": "settings",
+  "arrow.back": "arrow-back",
+  "arrow.forward": "arrow-forward",
+  checkmark: "check",
+  plus: "add",
+  minus: "remove",
+  "trash.fill": "delete",
+  trash: "delete",
+  "map.fill": "map",
+  calendar: "calendar-today",
+  "clock.fill": "access-time",
+  "tag.fill": "local-offer",
+};
 
 /**
  * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
